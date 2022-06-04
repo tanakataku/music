@@ -52,7 +52,7 @@
         "description": "キュー内の曲をシャッフルします"
     },
     {
-        "name": "get_queue",
+        "name": "queue",
         "description": "キューを取得します"
     },
     {

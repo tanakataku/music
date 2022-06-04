@@ -281,7 +281,7 @@ client.on("interactionCreate", async interaction => {
                 }]
             });
         };
-        if (interaction.commandName == "get_queue") {
+        if (interaction.commandName == "queue") {
             if (!guildQueue) return interaction.reply({
                 embeds: [{
                     title: "エラー",
