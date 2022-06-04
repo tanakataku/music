@@ -152,21 +152,22 @@ client.on("ready", async () => {
 client.on("interactionCreate", async interaction => {
     guild[interaction.guildId] = interaction.channelId;
     let guildQueue = await client.player.getQueue(interaction.guildId);
-    if (!interaction.member.voice.channel) return interaction.followUp({
+    if (!interaction.member.voice.channel) return interaction.reply({
         embeds: [{
             color: 0xff1100,
             title: "エラー",
             description: `ボイスチャンネルに参加してください。`
-        }]
+        }],
+        ephemeral:true
     });
-    if (!interaction.guild.me.permissionsIn(interaction.member.voice.channel).has("1048576")) return interaction.followUp({
+    if (!interaction.guild.me.permissionsIn(interaction.member.voice.channel).has("1048576")) return interaction.reply({
         embeds: [{
             color: 0xff1100,
             title: "エラー",
             description: '私にボイスチャンネル接続権限がないです。'
         }]
     });
-    if (!interaction.guild.me.permissionsIn(interaction.member.voice.channel).has('2097152')) return interaction.followUp({
+    if (!interaction.guild.me.permissionsIn(interaction.member.voice.channel).has('2097152')) return interaction.reply({
         embeds: [{
             color: 0xff1100,
             title: "エラー",
