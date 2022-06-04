@@ -66,7 +66,7 @@ const option_button = new MessageActionRow()
     .addComponents(
         new MessageButton()
             .setCustomId('vol_button')
-            .setLabel('詳細音量設定')
+            .setLabel('音量設定')
             .setStyle('PRIMARY'),
         new MessageButton()
             .setCustomId('seek_button')
@@ -78,11 +78,15 @@ const option_button = new MessageActionRow()
             .setStyle('PRIMARY'),
         new MessageButton()
             .setCustomId('loop_button')
-            .setLabel('この曲をループ')
+            .setLabel('曲をループ')
             .setStyle('PRIMARY'),
     );
 const option_button2 = new MessageActionRow()
     .addComponents(
+        new MessageButton()
+        .setCustomId('stop_loop_button')
+        .setLabel('ループ停止')
+        .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('pause_button')
             .setLabel('一時停止')
@@ -90,10 +94,6 @@ const option_button2 = new MessageActionRow()
         new MessageButton()
             .setCustomId('resume_button')
             .setLabel('再開')
-            .setStyle('SUCCESS'),
-        new MessageButton()
-            .setCustomId('stop_loop_button')
-            .setLabel('ループ停止')
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('skip_button')
