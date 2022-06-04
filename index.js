@@ -248,7 +248,7 @@ client.on("interactionCreate", async interaction => {
                         new MessageSelectMenu()
                             .setCustomId('select_music')
                             .setPlaceholder('選択されていません')
-                            .addOptions(videos.map(data => { return { "label": `[${i++}],${data.title.slice(0, 5)}`, value: data.videoId } })),
+                            .addOptions(videos.map(data => { return { "label": `[${i++}],${data.title.slice(0, 10)}`, value: data.videoId } })),
                     );
                 i = 1;
                 await interaction.followUp({
