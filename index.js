@@ -101,7 +101,7 @@ const option_button2 = new MessageActionRow()
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('stop_button')
-            .setLabel('Stop')
+            .setLabel('止める')
             .setStyle('DANGER'),
     );
 const vol_modal = new Modal()
