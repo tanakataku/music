@@ -146,7 +146,7 @@ player.on('queueEnd', async data => {
 })
 client.on("ready", async () => {
     await client.application.commands.set(slash_data, "");
-    client.user.setActivity('/play', { type: 'LISTENING' });
+    client.user.setActivity('/help', { type: 'LISTENING' });
     console.log(`完了!${client.user.username}`);
 });
 client.on("interactionCreate", async interaction => {
