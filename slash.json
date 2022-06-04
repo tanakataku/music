@@ -1,0 +1,90 @@
+[
+    {
+        "name": "play",
+        "description": "音楽を再生します",
+        "options": [
+            {
+                "type": "STRING",
+                "name": "url_or_words",
+                "description": "URLまたは検索したい言葉を入力してください",
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "volume",
+        "description": "音量を変更します",
+        "options": [
+            {
+                "type": "NUMBER",
+                "name": "volume",
+                "description": "0~100までの音量を設定してください",
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "now",
+        "description": "現在の使用状況を表示します"
+    },
+    {
+        "name": "pause",
+        "description": "曲を一時停止します"
+    },
+    {
+        "name": "resume",
+        "description": "一時停止を解除します"
+    },
+    {
+        "name": "remove",
+        "description": "指定した番号の曲を削除します",
+        "options": [
+            {
+                "type": "NUMBER",
+                "name": "remove",
+                "description": "削除したい番号を入力してください",
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "shuffle",
+        "description": "キュー内の曲をシャッフルします"
+    },
+    {
+        "name": "get_queue",
+        "description": "キューを取得します"
+    },
+    {
+        "name": "seek",
+        "description": "指定した位置から再生します",
+        "options": [
+            {
+                "type": "NUMBER",
+                "name": "seek",
+                "description": "飛ばしたい秒数を入力してください",
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "queue_loop",
+        "description": "キュー内の音楽ををループさせます"
+    },
+    {
+        "name": "loop",
+        "description": "現在の音楽をループします"
+    },
+    {
+        "name": "remove_loop",
+        "description": "ループを解除します"
+    },
+    {
+        "name": "stop",
+        "description": "音楽を停止します"
+    },
+    {
+        "name": "skip",
+        "description": "次の音楽を再生します"
+    }
+]

@@ -1,0 +1,24 @@
+{
+  "name": "music",
+  "version": "1.0.0",
+  "description": "音楽",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./index.js"
+  },
+  "keywords": [
+    "discord.js",
+    "discord.bot",
+    "discord",
+    "music"
+  ],
+  "author": "BR",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "discord-music-player": "^8.3.2",
+    "discord.js": "^13.7.0",
+    "dotenv": "^16.0.1",
+    "yt-search": "^2.10.3"
+  }
+}
