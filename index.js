@@ -84,21 +84,21 @@ const option_button = new MessageActionRow()
 const option_button2 = new MessageActionRow()
     .addComponents(
         new MessageButton()
+            .setCustomId('pause_button')
+            .setLabel('一時停止')
+            .setStyle('SUCCESS'),
+        new MessageButton()
             .setCustomId('resume_button')
-            .setLabel('Resume')
+            .setLabel('再開')
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('stop_loop_button')
-            .setLabel('StopLoop')
+            .setLabel('ループ停止')
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('skip_button')
-            .setLabel('Skip')
+            .setLabel('スキップ')
             .setStyle('SUCCESS'),
-        new MessageButton()
-            .setCustomId('pause_button')
-            .setLabel('Pause')
-            .setStyle('DANGER'),
         new MessageButton()
             .setCustomId('stop_button')
             .setLabel('Stop')
