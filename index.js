@@ -84,9 +84,9 @@ const option_button = new MessageActionRow()
 const option_button2 = new MessageActionRow()
     .addComponents(
         new MessageButton()
-        .setCustomId('stop_loop_button')
-        .setLabel('ループ停止')
-        .setStyle('SUCCESS'),
+            .setCustomId('stop_loop_button')
+            .setLabel('ループ停止')
+            .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('pause_button')
             .setLabel('一時停止')
@@ -158,7 +158,7 @@ client.on("interactionCreate", async interaction => {
             title: "エラー",
             description: `ボイスチャンネルに参加してください。`
         }],
-        ephemeral:true
+        ephemeral: true
     });
     if (!interaction.guild.me.permissionsIn(interaction.member.voice.channel).has("1048576")) return interaction.reply({
         embeds: [{
@@ -175,6 +175,15 @@ client.on("interactionCreate", async interaction => {
         }]
     });
     if (interaction.isCommand()) {
+        if (interaction.commandName == "help") {
+            interaction.reply({
+                embeds:[{
+                    title:"HELP",
+                    description:"/play 動画または再生リストのURLまたは検索したいワード\n動画を検索して音楽を再生します\n\n/volume 数字0~100まで\n音量を変更します\n\n/now\n現在の再生時間,動画の詳細を表示します\n\n/pause\n曲を一時停止します\n\n/resume\n曲を一時停止します\n\n/remove キュー内の数字\nキュー内の音楽を削除します\n\n/shuffle\nキュー内の音楽をシャッフルします\n\n/help\nこの画面です\n\n/queue\nキュー内の音楽を表示します\n\n/seek 数字\n指定した秒数から動画を開始します\n\n/queue_loop\nキュー内の音楽をループします\n\n/loop\n現在再生中の音楽をループします\n\n/remove_loop\nループを解除します\n\n/stop\n音楽を停止します\n\n/skip\nキュー内の次の音楽に移ります",
+                    color: 0x006400
+                }]
+            })
+        }
         if (interaction.commandName == "play") {
             await interaction.deferReply();
             const search = interaction.options.getString('url_or_words');
@@ -194,6 +203,7 @@ client.on("interactionCreate", async interaction => {
                         if (!guildQueue)
                             queue.stop();
                     });
+                    if (!song) return;
                     await interaction.followUp({
                         embeds: [{
                             title: `${(guildQueue) ? "キューに追加します" : "再生します"}`,
@@ -219,6 +229,7 @@ client.on("interactionCreate", async interaction => {
                         if (!guildQueue)
                             queue.stop();
                     });
+                    if (!song) return;
                     await interaction.followUp({
                         embeds: [{
                             title: `${(guildQueue) ? "キューに追加します" : "再生します"}`,
@@ -539,6 +550,7 @@ client.on("interactionCreate", async interaction => {
                 if (!guildQueue)
                     queue.stop();
             });
+            if (!song) return;
             await interaction.followUp({
                 embeds: [{
                     title: `${(guildQueue) ? "キューに追加します" : "再生します"}`,

@@ -52,6 +52,10 @@
         "description": "キュー内の曲をシャッフルします"
     },
     {
+        "name": "help",
+        "description": "helpを表示します"
+    },
+    {
         "name": "queue",
         "description": "キューを取得します"
     },
