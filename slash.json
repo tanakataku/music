@@ -90,5 +90,22 @@
     {
         "name": "skip",
         "description": "次の音楽を再生します"
+    },
+    {
+        "name": "ly",
+        "description": "歌詞を表示します",
+        "options": [
+            {
+                "type": "STRING",
+                "name": "music_name",
+                "description": "曲名を入れてください",
+                "required": true
+            },
+            {
+                "type": "STRING",
+                "name": "artist",
+                "description": "正確に検索したい場合はアーティスト名を入れてください"
+            }
+        ]
     }
 ]

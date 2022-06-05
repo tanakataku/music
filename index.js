@@ -3,7 +3,9 @@ require('dotenv').config();
 const slash_data = require("./slash.json")
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 const { Player, RepeatMode } = require("discord-music-player");
-const yts = require('yt-search')
+const yts = require('yt-search');
+const lyricsFinder = require('lyrics-finder');
+const ly_tmp = []
 const player = new Player(client, {
     leaveOnEmpty: true,
 });
@@ -66,42 +68,34 @@ const option_button = new MessageActionRow()
     .addComponents(
         new MessageButton()
             .setCustomId('vol_button')
-            .setLabel('音量設定')
+            .setLabel('🎚️')
             .setStyle('PRIMARY'),
         new MessageButton()
             .setCustomId('seek_button')
-            .setLabel('再生場所指定')
-            .setStyle('PRIMARY'),
-        new MessageButton()
-            .setCustomId('queueloop_button')
-            .setLabel('キューをループ')
+            .setLabel('↔')
             .setStyle('PRIMARY'),
         new MessageButton()
             .setCustomId('loop_button')
-            .setLabel('曲をループ')
+            .setLabel('🔁')
             .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('pause_button')
+            .setLabel('⏸')
+            .setStyle('SUCCESS'),
     );
 const option_button2 = new MessageActionRow()
     .addComponents(
         new MessageButton()
-            .setCustomId('stop_loop_button')
-            .setLabel('ループ停止')
-            .setStyle('SUCCESS'),
-        new MessageButton()
-            .setCustomId('pause_button')
-            .setLabel('一時停止')
-            .setStyle('SUCCESS'),
-        new MessageButton()
             .setCustomId('resume_button')
-            .setLabel('再開')
+            .setLabel('▶')
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('skip_button')
-            .setLabel('スキップ')
+            .setLabel('⏭️')
             .setStyle('SUCCESS'),
         new MessageButton()
             .setCustomId('stop_button')
-            .setLabel('止める')
+            .setLabel('⏹')
             .setStyle('DANGER'),
     );
 const vol_modal = new Modal()
@@ -152,13 +146,89 @@ client.on("ready", async () => {
 client.on("interactionCreate", async interaction => {
     guild[interaction.guildId] = interaction.channelId;
     let guildQueue = await client.player.getQueue(interaction.guildId);
+    if (interaction.customId?.startsWith("lyn")) {
+        const nowpage = Number(interaction.customId.split("&")[1]);
+        const cat_ly = ly_tmp[interaction.guildId]
+        if (!cat_ly) return interaction.reply({ embeds: [{ title: "エラー", description: "tmp情報が見つからなかった" }], ephemeral: true });
+        const lybutton = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`lyb&${nowpage + 1}`)
+                    .setLabel('⏪')
+                    .setStyle('PRIMARY'),
+                new MessageButton()
+                    .setCustomId(`lyn&${nowpage + 1}`)
+                    .setLabel('⏩')
+                    .setStyle('PRIMARY')
+                    .setDisabled((cat_ly[nowpage + 1]) ? true : false),
+            );
+        return interaction.reply({
+            embeds: [{
+                title: "歌詞",
+                description: cat_ly[nowpage + 1].replace(/>/g, "\n"),
+                color: 0x006400
+            }],
+            components: [lybutton]
+        });
+    };
+    if (interaction.customId?.startsWith("lyb")) {
+        const nowpage = Number(interaction.customId.split("&")[1]);
+        const cat_ly = ly_tmp[interaction.guildId]
+        if (!cat_ly) return interaction.reply({ embeds: [{ title: "エラー", description: "tmp情報が見つからなかった" }], ephemeral: true });
+        const lybutton = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`lyb&${nowpage - 1}`)
+                    .setLabel('⏪')
+                    .setStyle('PRIMARY')
+                    .setDisabled((cat_ly[nowpage - 1]) ? true : false),
+                new MessageButton()
+                    .setCustomId(`lyn&${nowpage - 1}`)
+                    .setLabel('⏩')
+                    .setStyle('PRIMARY')
+            );
+        return interaction.reply({
+            embeds: [{
+                title: "歌詞",
+                description: cat_ly[nowpage - 1].replace(/>/g, "\n"),
+                color: 0x006400
+            }],
+            components: [lybutton]
+        });
+    };
     if (interaction.commandName == "help") {
-        interaction.reply({
-            embeds:[{
-                title:"HELP",
-                description:"/play 動画または再生リストのURLまたは検索したいワード\n動画を検索して音楽を再生します\n\n/volume 数字0~100まで\n音量を変更します\n\n/now\n現在の再生時間,動画の詳細を表示します\n\n/pause\n曲を一時停止します\n\n/resume\n曲を一時停止します\n\n/remove キュー内の数字\nキュー内の音楽を削除します\n\n/shuffle\nキュー内の音楽をシャッフルします\n\n/help\nこの画面です\n\n/queue\nキュー内の音楽を表示します\n\n/seek 数字\n指定した秒数から動画を開始します\n\n/queue_loop\nキュー内の音楽をループします\n\n/loop\n現在再生中の音楽をループします\n\n/remove_loop\nループを解除します\n\n/stop\n音楽を停止します\n\n/skip\nキュー内の次の音楽に移ります",
+        return interaction.reply({
+            embeds: [{
+                title: "HELP",
+                description: "/play 動画または再生リストのURLまたは検索したいワード\n動画を検索して音楽を再生します\n\n/volume 数字0~100まで\n音量を変更します\n\n/now\n現在の再生時間,動画の詳細を表示します\n\n/pause\n曲を一時停止します\n\n/resume\n曲を一時停止します\n\n/remove キュー内の数字\nキュー内の音楽を削除します\n\n/shuffle\nキュー内の音楽をシャッフルします\n\n/help\nこの画面です\n\n/queue\nキュー内の音楽を表示します\n\n/seek 数字\n指定した秒数から動画を開始します\n\n/queue_loop\nキュー内の音楽をループします\n\n/loop\n現在再生中の音楽をループします\n\n/remove_loop\nループを解除します\n\n/stop\n音楽を停止します\n\n/skip\nキュー内の次の音楽に移ります\n\n/ly 音楽名 アーティスト(任意)\n歌詞を検索します",
                 color: 0x006400
             }]
+        });
+    };
+    if (interaction.commandName == "ly") {
+        const lyrics = await lyricsFinder(interaction.options.getString('artist') || "", interaction.options.getString('music_name')) || "Not Found!";
+        const cat_ly = lyrics.replace(/\n/g, ">").match(new RegExp('.{0,2000}', 'g')).filter(x => x);
+        ly_tmp[interaction.guildId] = cat_ly;
+        const lybutton = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`lyb&0`)
+                    .setLabel('⏪')
+                    .setStyle('PRIMARY')
+                    .setDisabled(true),
+                new MessageButton()
+                    .setCustomId(`lyn&0`)
+                    .setLabel('⏩')
+                    .setStyle('PRIMARY')
+                    .setDisabled((cat_ly[1]) ? false : true)
+            );
+        return interaction.reply({
+            embeds: [{
+                title: "歌詞",
+                description: cat_ly[0]?.replace(/>/g, "\n"),
+                color: 0x006400
+            }],
+            components: [lybutton]
         });
     };
     if (!interaction.member.voice.channel) return interaction.reply({
@@ -584,6 +654,7 @@ client.on("interactionCreate", async interaction => {
         };
     };
     if (interaction.isButton()) {
+
         if (!guildQueue) return interaction.reply({
             embeds: [{
                 title: "エラー",
@@ -604,16 +675,6 @@ client.on("interactionCreate", async interaction => {
                 embeds: [{
                     title: `曲の停止`,
                     description: `${interaction.user.tag}さんが曲を停止しました`,
-                    color: 0x006400
-                }]
-            });
-        };
-        if (interaction.customId == "queueloop_button") {
-            await guildQueue.setRepeatMode(RepeatMode.QUEUE);
-            await interaction.reply({
-                embeds: [{
-                    title: `キューのループ`,
-                    description: `キュー内の音楽をループしました\nリクエスト:${interaction.user.tag}`,
                     color: 0x006400
                 }]
             });
@@ -658,16 +719,7 @@ client.on("interactionCreate", async interaction => {
                 }]
             });
         };
-        if (interaction.customId == "stop_loop_button") {
-            guildQueue.setRepeatMode(RepeatMode.DISABLED);
-            await interaction.reply({
-                embeds: [{
-                    title: `ループの解除`,
-                    description: `ループを解除しました\nリクエスト:${interaction.user.tag}`,
-                    color: 0x006400
-                }]
-            });
-        };
+
     };
     if (interaction.isModalSubmit()) {
         if (!guildQueue) return interaction.reply({
