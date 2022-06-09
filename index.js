@@ -1,9 +1,3 @@
-// Response for Uptime Robot
-const http = require('http');
-http.createServer(function (req, res) {
-  res.write("online");
-  res.end();
-}).listen(8080);
 const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageButton, Modal, TextInputComponent } = require('discord.js');
 require('dotenv').config();
 const slash_data = require("./slash.json")
