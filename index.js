@@ -4,6 +4,7 @@ const { Player, RepeatMode } = require("discord-music-player");
 const lyricsFinder = require('lyrics-finder');
 const slash_data = require("./slash.json");
 const yts = require('yt-search');
+const http = require('http');
 const ly_tmp = new Array();
 const player = new Player(client, { leaveOnEmpty: true });
 const vol_select = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('vol_select').setPlaceholder('クイック音量').addOptions([{ label: '1', description: '音量を1にします', value: '1' }, { label: '10', description: '音量を10にします', value: '10' }, { label: '20', description: '音量を20にします', value: '20' }, { label: '30', description: '音量を30にします', value: '30' }, { label: '40', description: '音量を40にします', value: '40' }, { label: '50', description: '音量を50にします', value: '50' }, { label: '60', description: '音量を60にします', value: '60' }, { label: '70', description: '音量を70にします', value: '70', }, { label: '80', description: '音量を80にします', value: '80' }, { label: '90', description: '音量を90にします', value: '90' }, { label: '100', description: '音量を100にします', value: '100' }]));
@@ -15,6 +16,7 @@ let guild = [];
 require('dotenv').config();
 seek_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('seek').setLabel("再生したい時間を数字で入力してください").setStyle('SHORT').setMinLength(1).setPlaceholder("数字を入力").setRequired(true)));
 vol_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('vol').setLabel("音量を数字で0~100までを入力してください").setStyle('SHORT').setMaxLength(3).setMinLength(1).setPlaceholder("0~100まで").setRequired(true)));
+http.createServer((_, res) => res.end("online")).listen(8080);
 client.player = player;
 player.on('queueEnd', async data => {
     await data.guild.channels.cache.get(guild[data.guild.id])?.send({
