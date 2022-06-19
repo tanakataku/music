@@ -620,3 +620,4 @@ client.on("interactionCreate", async interaction => {
     };
 });
 client.login(process.env.token).catch(_ => console.log("トークンが間違っています。"));
+process.on('uncaughtException', _ => {});
