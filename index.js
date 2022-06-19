@@ -1,132 +1,20 @@
 const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageButton, Modal, TextInputComponent } = require('discord.js');
-require('dotenv').config();
-const slash_data = require("./slash.json")
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 const { Player, RepeatMode } = require("discord-music-player");
-const yts = require('yt-search');
 const lyricsFinder = require('lyrics-finder');
-const ly_tmp = []
-const player = new Player(client, {
-    leaveOnEmpty: true,
-});
+const slash_data = require("./slash.json");
+const yts = require('yt-search');
+const ly_tmp = new Array();
+const player = new Player(client, { leaveOnEmpty: true });
+const vol_select = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('vol_select').setPlaceholder('クイック音量').addOptions([{ label: '1', description: '音量を1にします', value: '1' }, { label: '10', description: '音量を10にします', value: '10' }, { label: '20', description: '音量を20にします', value: '20' }, { label: '30', description: '音量を30にします', value: '30' }, { label: '40', description: '音量を40にします', value: '40' }, { label: '50', description: '音量を50にします', value: '50' }, { label: '60', description: '音量を60にします', value: '60' }, { label: '70', description: '音量を70にします', value: '70', }, { label: '80', description: '音量を80にします', value: '80' }, { label: '90', description: '音量を90にします', value: '90' }, { label: '100', description: '音量を100にします', value: '100' }]));
+const option_button = new MessageActionRow().addComponents(new MessageButton().setCustomId('vol_button').setLabel('🎚️').setStyle('PRIMARY'), new MessageButton().setCustomId('seek_button').setLabel('↔').setStyle('PRIMARY'), new MessageButton().setCustomId('loop_button').setLabel('🔁').setStyle('PRIMARY'), new MessageButton().setCustomId('pause_button').setLabel('⏸').setStyle('SUCCESS'));
+const option_button2 = new MessageActionRow().addComponents(new MessageButton().setCustomId('resume_button').setLabel('▶').setStyle('SUCCESS'), new MessageButton().setCustomId('skip_button').setLabel('⏭️').setStyle('SUCCESS'), new MessageButton().setCustomId('stop_button').setLabel('⏹').setStyle('DANGER'));
+const vol_modal = new Modal().setCustomId('vol_Modal').setTitle('音量詳細設定画面');
+const seek_modal = new Modal().setCustomId('seek_Modal').setTitle('音量詳細設定画面');
 let guild = [];
-const vol_select = new MessageActionRow()
-    .addComponents(
-        new MessageSelectMenu()
-            .setCustomId('vol_select')
-            .setPlaceholder('クイック音量')
-            .addOptions([
-                {
-                    label: '1',
-                    description: '音量を1にします',
-                    value: '1',
-                },
-                {
-                    label: '10',
-                    description: '音量を10にします',
-                    value: '10',
-                }, {
-                    label: '20',
-                    description: '音量を20にします',
-                    value: '20',
-                }, {
-                    label: '30',
-                    description: '音量を30にします',
-                    value: '30',
-                }, {
-                    label: '40',
-                    description: '音量を40にします',
-                    value: '40',
-                }, {
-                    label: '50',
-                    description: '音量を50にします',
-                    value: '50',
-                }, {
-                    label: '60',
-                    description: '音量を60にします',
-                    value: '60',
-                }, {
-                    label: '70',
-                    description: '音量を70にします',
-                    value: '70',
-                }, {
-                    label: '80',
-                    description: '音量を80にします',
-                    value: '80',
-                }, {
-                    label: '90',
-                    description: '音量を90にします',
-                    value: '90',
-                }, {
-                    label: '100',
-                    description: '音量を100にします',
-                    value: '100',
-                },
-            ]),
-    );
-const option_button = new MessageActionRow()
-    .addComponents(
-        new MessageButton()
-            .setCustomId('vol_button')
-            .setLabel('🎚️')
-            .setStyle('PRIMARY'),
-        new MessageButton()
-            .setCustomId('seek_button')
-            .setLabel('↔')
-            .setStyle('PRIMARY'),
-        new MessageButton()
-            .setCustomId('loop_button')
-            .setLabel('🔁')
-            .setStyle('PRIMARY'),
-        new MessageButton()
-            .setCustomId('pause_button')
-            .setLabel('⏸')
-            .setStyle('SUCCESS'),
-    );
-const option_button2 = new MessageActionRow()
-    .addComponents(
-        new MessageButton()
-            .setCustomId('resume_button')
-            .setLabel('▶')
-            .setStyle('SUCCESS'),
-        new MessageButton()
-            .setCustomId('skip_button')
-            .setLabel('⏭️')
-            .setStyle('SUCCESS'),
-        new MessageButton()
-            .setCustomId('stop_button')
-            .setLabel('⏹')
-            .setStyle('DANGER'),
-    );
-const vol_modal = new Modal()
-    .setCustomId('vol_Modal')
-    .setTitle('音量詳細設定画面');
-vol_modal.addComponents(
-    new MessageActionRow().addComponents(
-        new TextInputComponent()
-            .setCustomId('vol')
-            .setLabel("音量を数字で0~100までを入力してください")
-            .setStyle('SHORT')
-            .setMaxLength(3)
-            .setMinLength(1)
-            .setPlaceholder("0~100まで")
-            .setRequired(true)
-    )
-);
-const seek_modal = new Modal()
-    .setCustomId('seek_Modal')
-    .setTitle('音量詳細設定画面');
-seek_modal.addComponents(
-    new MessageActionRow().addComponents(
-        new TextInputComponent()
-            .setCustomId('seek')
-            .setLabel("再生したい時間を数字で入力してください")
-            .setStyle('SHORT')
-            .setMinLength(1)
-            .setPlaceholder("数字を入力")
-            .setRequired(true)
-    )
-);
+require('dotenv').config();
+seek_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('seek').setLabel("再生したい時間を数字で入力してください").setStyle('SHORT').setMinLength(1).setPlaceholder("数字を入力").setRequired(true)));
+vol_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('vol').setLabel("音量を数字で0~100までを入力してください").setStyle('SHORT').setMaxLength(3).setMinLength(1).setPlaceholder("0~100まで").setRequired(true)));
 client.player = player;
 player.on('queueEnd', async data => {
     await data.guild.channels.cache.get(guild[data.guild.id])?.send({
@@ -135,10 +23,10 @@ player.on('queueEnd', async data => {
             description: "全ての曲の再生が終了しました",
             color: 0x006400
         }]
-    }).catch(() => { });
+    }).catch(_ => { });
     delete guild[data.guild.id];
-})
-client.on("ready", async () => {
+});
+client.on("ready", async _ => {
     await client.application.commands.set(slash_data, "");
     client.user.setActivity('/help', { type: 'LISTENING' });
     console.log(`完了!${client.user.username}`);
@@ -148,20 +36,9 @@ client.on("interactionCreate", async interaction => {
     let guildQueue = await client.player.getQueue(interaction.guildId);
     if (interaction.customId?.startsWith("lyn")) {
         const nowpage = Number(interaction.customId.split("&")[1]);
-        const cat_ly = ly_tmp[interaction.guildId]
+        const cat_ly = ly_tmp[interaction.guildId];
         if (!cat_ly) return interaction.reply({ embeds: [{ title: "エラー", description: "tmp情報が見つからなかった" }], ephemeral: true });
-        const lybutton = new MessageActionRow()
-            .addComponents(
-                new MessageButton()
-                    .setCustomId(`lyb&${nowpage + 1}`)
-                    .setLabel('⏪')
-                    .setStyle('PRIMARY'),
-                new MessageButton()
-                    .setCustomId(`lyn&${nowpage + 1}`)
-                    .setLabel('⏩')
-                    .setStyle('PRIMARY')
-                    .setDisabled((cat_ly[nowpage + 1]) ? true : false),
-            );
+        const lybutton = new MessageActionRow().addComponents(new MessageButton().setCustomId(`lyb&${nowpage + 1}`).setLabel('⏪').setStyle('PRIMARY'), new MessageButton().setCustomId(`lyn&${nowpage + 1}`).setLabel('⏩').setStyle('PRIMARY').setDisabled((cat_ly[nowpage + 1]) ? true : false));
         return interaction.reply({
             embeds: [{
                 title: "歌詞",
@@ -173,20 +50,9 @@ client.on("interactionCreate", async interaction => {
     };
     if (interaction.customId?.startsWith("lyb")) {
         const nowpage = Number(interaction.customId.split("&")[1]);
-        const cat_ly = ly_tmp[interaction.guildId]
+        const cat_ly = ly_tmp[interaction.guildId];
         if (!cat_ly) return interaction.reply({ embeds: [{ title: "エラー", description: "tmp情報が見つからなかった" }], ephemeral: true });
-        const lybutton = new MessageActionRow()
-            .addComponents(
-                new MessageButton()
-                    .setCustomId(`lyb&${nowpage - 1}`)
-                    .setLabel('⏪')
-                    .setStyle('PRIMARY')
-                    .setDisabled((cat_ly[nowpage - 1]) ? true : false),
-                new MessageButton()
-                    .setCustomId(`lyn&${nowpage - 1}`)
-                    .setLabel('⏩')
-                    .setStyle('PRIMARY')
-            );
+        const lybutton = new MessageActionRow().addComponents(new MessageButton().setCustomId(`lyb&${nowpage - 1}`).setLabel('⏪').setStyle('PRIMARY').setDisabled((cat_ly[nowpage - 1]) ? true : false), new MessageButton().setCustomId(`lyn&${nowpage - 1}`).setLabel('⏩').setStyle('PRIMARY'));
         return interaction.reply({
             embeds: [{
                 title: "歌詞",
@@ -206,22 +72,10 @@ client.on("interactionCreate", async interaction => {
         });
     };
     if (interaction.commandName == "ly") {
-        const lyrics = await lyricsFinder(interaction.options.getString('artist') || "", interaction.options.getString('music_name')) || "Not Found!";
+        const lyrics = await lyricsFinder(interaction.options.getString('artist') || "", interaction.options.getString('music_name')) || "見つからなかった";
         const cat_ly = lyrics.replace(/\n/g, ">").match(new RegExp('.{0,2000}', 'g')).filter(x => x);
         ly_tmp[interaction.guildId] = cat_ly;
-        const lybutton = new MessageActionRow()
-            .addComponents(
-                new MessageButton()
-                    .setCustomId(`lyb&0`)
-                    .setLabel('⏪')
-                    .setStyle('PRIMARY')
-                    .setDisabled(true),
-                new MessageButton()
-                    .setCustomId(`lyn&0`)
-                    .setLabel('⏩')
-                    .setStyle('PRIMARY')
-                    .setDisabled((cat_ly[1]) ? false : true)
-            );
+        const lybutton = new MessageActionRow().addComponents(new MessageButton().setCustomId(`lyb&0`).setLabel('⏪').setStyle('PRIMARY').setDisabled(true), new MessageButton().setCustomId(`lyn&0`).setLabel('⏩').setStyle('PRIMARY').setDisabled((cat_ly[1]) ? false : true));
         return interaction.reply({
             embeds: [{
                 title: "歌詞",
@@ -258,7 +112,7 @@ client.on("interactionCreate", async interaction => {
             await interaction.deferReply();
             const search = interaction.options.getString('url_or_words');
             if (search.startsWith("https://")) {//URLの場合
-                const playlist_check = search.split("&")[1]
+                const playlist_check = search.split("&")[1];
                 if (playlist_check) {//プレイリストであった場合
                     let queue = client.player.createQueue(interaction.guildId);
                     await queue.join(interaction.member.voice.channel);
@@ -270,8 +124,7 @@ client.on("interactionCreate", async interaction => {
                                 description: 'プレイリストが見つかりませんでした'
                             }]
                         });
-                        if (!guildQueue)
-                            queue.stop();
+                        if (!guildQueue) queue.stop();
                     });
                     if (!song) return;
                     await interaction.followUp({
@@ -296,8 +149,7 @@ client.on("interactionCreate", async interaction => {
                                 description: '音楽が見つかりませんでした'
                             }]
                         });
-                        if (!guildQueue)
-                            queue.stop();
+                        if (!guildQueue) queue.stop();
                     });
                     if (!song) return;
                     await interaction.followUp({
@@ -315,7 +167,7 @@ client.on("interactionCreate", async interaction => {
                 //https://www.youtube.com/watch?v=hpibjIAiZHM&list=RDMMhpibjIAiZHM&start_radio=1
                 //https://www.youtube.com/watch?v=-6po4gNBePA
             } else {//言葉の場合
-                const r = await yts(search);
+                const r = yts(search);
                 const videos = r.videos.slice(0, 10);
                 if (!videos) return interaction.followUp({
                     embeds: [{
@@ -325,13 +177,7 @@ client.on("interactionCreate", async interaction => {
                     }]
                 });
                 let i = 1;
-                const select_music = new MessageActionRow()
-                    .addComponents(
-                        new MessageSelectMenu()
-                            .setCustomId('select_music')
-                            .setPlaceholder('選択されていません')
-                            .addOptions(videos.map(data => { return { "label": `[${i++}],${data.title.slice(0, 10)}`, value: data.videoId } })),
-                    );
+                const select_music = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('select_music').setPlaceholder('選択されていません').addOptions(videos.map(data => { return { "label": `[${i++}],${data.title.slice(0, 10)}`, value: data.videoId } })));
                 i = 1;
                 await interaction.followUp({
                     embeds: [{
@@ -617,8 +463,7 @@ client.on("interactionCreate", async interaction => {
                         description: '音楽が見つかりませんでした'
                     }]
                 });
-                if (!guildQueue)
-                    queue.stop();
+                if (!guildQueue) queue.stop();
             });
             if (!song) return;
             await interaction.followUp({
@@ -772,4 +617,4 @@ client.on("interactionCreate", async interaction => {
         };
     };
 });
-client.login(process.env.token)
+client.login(process.env.token).catch(_ => console.log("トークンが間違っています。"));
