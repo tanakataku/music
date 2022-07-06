@@ -169,7 +169,7 @@ client.on("interactionCreate", async interaction => {
                 //https://www.youtube.com/watch?v=hpibjIAiZHM&list=RDMMhpibjIAiZHM&start_radio=1
                 //https://www.youtube.com/watch?v=-6po4gNBePA
             } else {//言葉の場合
-                const r = yts(search);
+                const r = await yts(search);
                 const videos = r.videos.slice(0, 10);
                 if (!videos) return interaction.followUp({
                     embeds: [{
@@ -189,6 +189,7 @@ client.on("interactionCreate", async interaction => {
                     }],
                     components: [select_music]
                 });
+                console.log("i")
             };
         };
         if (interaction.commandName == "remove") {
