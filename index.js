@@ -189,7 +189,6 @@ client.on("interactionCreate", async interaction => {
                     }],
                     components: [select_music]
                 });
-                console.log("i")
             };
         };
         if (interaction.commandName == "remove") {
