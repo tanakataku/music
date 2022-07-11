@@ -11,8 +11,8 @@ const vol_select = new MessageActionRow().addComponents(new MessageSelectMenu().
 const option_button = new MessageActionRow().addComponents(new MessageButton().setCustomId('vol_button').setLabel('🎚️').setStyle('PRIMARY'), new MessageButton().setCustomId('seek_button').setLabel('↔').setStyle('PRIMARY'), new MessageButton().setCustomId('loop_button').setLabel('🔁').setStyle('PRIMARY'), new MessageButton().setCustomId('pause_button').setLabel('⏸').setStyle('SUCCESS'));
 const option_button2 = new MessageActionRow().addComponents(new MessageButton().setCustomId('resume_button').setLabel('▶').setStyle('SUCCESS'), new MessageButton().setCustomId('skip_button').setLabel('⏭️').setStyle('SUCCESS'), new MessageButton().setCustomId('stop_button').setLabel('⏹').setStyle('DANGER'));
 const vol_modal = new Modal().setCustomId('vol_Modal').setTitle('音量詳細設定画面');
-const seek_modal = new Modal().setCustomId('seek_Modal').setTitle('音量詳細設定画面');
-let guild = [];
+const seek_modal = new Modal().setCustomId('seek_Modal').setTitle('再生位置詳細設定画面');
+let guild = new Array();
 require('dotenv').config();
 seek_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('seek').setLabel("再生したい時間を数字で入力してください").setStyle('SHORT').setMinLength(1).setPlaceholder("数字を入力").setRequired(true)));
 vol_modal.addComponents(new MessageActionRow().addComponents(new TextInputComponent().setCustomId('vol').setLabel("音量を数字で0~100までを入力してください").setStyle('SHORT').setMaxLength(3).setMinLength(1).setPlaceholder("0~100まで").setRequired(true)));
